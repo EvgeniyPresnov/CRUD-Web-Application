@@ -18,7 +18,7 @@ mvn tomcat7:run
 ```
 Open the browser
 ```
-http://localhost:8080/
+http://localhost:8088/
 ```
 ## Running the tests
 ```
