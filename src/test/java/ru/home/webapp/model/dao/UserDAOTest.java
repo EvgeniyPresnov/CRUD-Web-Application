@@ -15,8 +15,8 @@ import org.junit.Test;
 public class UserDAOTest {
     private Connection connection;
     private static final String URL = "jdbc:mysql://localhost:3306/crud_web_app";
-    private static final String USER = "***";
-    private static final String PASSWORD = "***";
+    private static final String USER = "evgen";
+    private static final String PASSWORD = "Evg3n_1995";
 
     @Before
     public void before() {
