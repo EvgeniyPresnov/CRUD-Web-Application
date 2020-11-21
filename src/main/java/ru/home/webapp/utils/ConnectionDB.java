@@ -17,7 +17,7 @@ public final class ConnectionDB {
     private ConnectionDB() {
         try {
             final String URL = "jdbc:mysql://localhost:3306/crud_web_app";
-            final String USER = "***";
+            final String USER = "evgen";
             final String DRIVER = "com.mysql.jdbc.Driver";
 
             Class.forName(DRIVER);
@@ -30,7 +30,7 @@ public final class ConnectionDB {
     }
 
     private String getPassword() {
-        return "***";
+        return "Evg3n_1995";
     }
 
     public static ConnectionDB getInstance() throws SQLException {
