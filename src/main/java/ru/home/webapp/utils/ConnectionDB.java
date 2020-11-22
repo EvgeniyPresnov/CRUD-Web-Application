@@ -1,8 +1,10 @@
 package ru.home.webapp.utils;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * This class provides access to a database connection
@@ -10,30 +12,26 @@ import java.sql.SQLException;
  * @author Evgeniy Presnov
  */
 public final class ConnectionDB {
-    private static ConnectionDB instance;
-    private Connection connection;
+    private static ConnectionDB instance = null;
+    private Connection connection = null;
+    private static String user = null;
+    private static String password = null;
+    private static String url = null;
+    private static String driver = null;
 
     private ConnectionDB() {
         try {
-            final String URL = "jdbc:mysql://localhost:3306/crud_web_app";
-            final String USER = "evgen";
-            final String DRIVER = "com.mysql.jdbc.Driver";
-
-            Class.forName(DRIVER);
-            connection = DriverManager.getConnection(URL, USER, getPassword());
-
+            loadProperties();
+            Class.forName(driver);
+            connection = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
 
     }
 
-    private String getPassword() {
-        return "Evg3n_1995";
-    }
-
-    public static synchronized ConnectionDB getInstance() throws SQLException {
-        if (instance == null || instance.getConnection().isClosed()) {
+    public static synchronized ConnectionDB getInstance() {
+        if (instance == null) {
             instance = new ConnectionDB();
         }
         return instance;
@@ -43,7 +41,24 @@ public final class ConnectionDB {
         return connection;
     }
 
-    public void closeConnection() throws SQLException {
-        connection.close();
+    public void closeConnection()  {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadProperties() {
+        Properties properties = new Properties();
+        try {
+            properties.load(ConnectionDB.class.getResourceAsStream("/db.properties"));
+            user = properties.getProperty("user");
+            password = properties.getProperty("password");
+            url = properties.getProperty("url");
+            driver = properties.getProperty("driver");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
