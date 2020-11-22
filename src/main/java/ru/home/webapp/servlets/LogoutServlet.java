@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * This class implements the logic for deleting a user from the database
@@ -20,7 +21,12 @@ public class LogoutServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        IUserDAO userDAO = new UserDAO();
+        IUserDAO userDAO = null;
+        try {
+            userDAO = new UserDAO();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         LogHandler logHandler = new LogHandler(this);
 
         String user = (String) req.getSession().getAttribute("loginedUser");

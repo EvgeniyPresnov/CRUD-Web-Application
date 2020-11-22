@@ -19,12 +19,7 @@ public final class BookDAO implements IBookDAO {
     private LogHandler logHandler = new LogHandler(this);
 
     public BookDAO() {
-        try {
-            connection = ConnectionDB.getInstance().getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
-        }
+        connection = ConnectionDB.getInstance().getConnection();
     }
 
     /**

@@ -24,12 +24,7 @@ public final class ConnectionDBListener implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        try {
-            ConnectionDB.getInstance();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
-        }
+        ConnectionDB.getInstance();
         logHandler.logInfo(INIT_CONNECTION);
     }
 
@@ -38,12 +33,7 @@ public final class ConnectionDBListener implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        try {
-            ConnectionDB.getInstance().closeConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
-        }
+        ConnectionDB.getInstance().closeConnection();
         logHandler.logInfo(CLOSE_CONNECTION);
     }
 }

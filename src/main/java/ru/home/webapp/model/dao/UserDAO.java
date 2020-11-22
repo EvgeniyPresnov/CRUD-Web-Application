@@ -19,13 +19,8 @@ public final class UserDAO implements IUserDAO {
     private Connection connection;
     private PreparedStatement preparedStatement;
 
-    public UserDAO() {
-        try {
-            connection = ConnectionDB.getInstance().getConnection();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
-        }
+    public UserDAO() throws SQLException {
+        connection = ConnectionDB.getInstance().getConnection();
     }
 
     /**
