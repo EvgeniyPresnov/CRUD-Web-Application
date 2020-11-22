@@ -6,12 +6,11 @@ import java.sql.SQLException;
 
 /**
  * This class provides access to a database connection
- * and is implemented using a Singleton design pattern
  *
  * @author Evgeniy Presnov
  */
 public final class ConnectionDB {
-    private static volatile ConnectionDB instance;
+    private static ConnectionDB instance;
     private Connection connection;
 
     private ConnectionDB() {
@@ -33,11 +32,8 @@ public final class ConnectionDB {
         return "Evg3n_1995";
     }
 
-    public static ConnectionDB getInstance() throws SQLException {
-        if (instance == null) {
-            instance = new ConnectionDB();
-        }
-        else if (instance.getConnection().isClosed()) {
+    public static synchronized ConnectionDB getInstance() throws SQLException {
+        if (instance == null || instance.getConnection().isClosed()) {
             instance = new ConnectionDB();
         }
         return instance;
