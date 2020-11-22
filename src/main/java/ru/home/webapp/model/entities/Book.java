@@ -3,7 +3,7 @@ package ru.home.webapp.model.entities;
 import java.io.Serializable;
 
 /**
- * Java Bean
+ * This is class is simple POJO containing get/set methods to store data retrieved using DAO class
  *
  * @author Evgeniy Presnov
  */
