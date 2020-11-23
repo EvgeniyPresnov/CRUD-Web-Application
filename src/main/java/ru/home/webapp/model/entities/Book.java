@@ -39,4 +39,28 @@ public class Book implements Serializable {
         this.title = title;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof Book)) {
+            return false;
+        }
+        Book book = (Book) obj;
+
+        return book.bookID.equals(bookID)
+                && book.title.equals(title)
+                && book.author.equals(author);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + bookID.hashCode();
+        result = 31 * result + title.hashCode();
+        result = 31 * result + author.hashCode();
+        return result;
+    }
+
 }
