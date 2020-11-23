@@ -16,12 +16,6 @@ import java.sql.SQLException;
  */
 public final class UserDAO implements IUserDAO {
     private LogHandler logHandler = new LogHandler(this);
-    private Connection connection;
-    private PreparedStatement preparedStatement;
-
-    public UserDAO() throws SQLException {
-        connection = ConnectionDB.getInstance().getConnection();
-    }
 
     /**
      *
@@ -30,51 +24,55 @@ public final class UserDAO implements IUserDAO {
     @Override
     public void addUser(User user) {
         final String ADD_USER = "INSERT INTO user VALUES(?, ?)";
-        try {
-            preparedStatement = connection.prepareStatement(ADD_USER);
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getPassword());
-            preparedStatement.executeUpdate();
+
+        try (PreparedStatement statement = ConnectionDB.getInstance()
+                .getConnection()
+                .prepareStatement(ADD_USER)) {
+
+            statement.setString(1, user.getName());
+            statement.setString(2, user.getPassword());
+            statement.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
-        } finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     /**
      *
-     * @param userName
-     * @param password
+     * @param password user password
      * @return the user by name and password
      */
     @Override
     public User getUser(String userName, String password) {
+        final String GET_USER = "SELECT * FROM user WHERE name = ? AND password = ?";
         User user = new User();
-        final String GET_USER = "SELECT * FROM user WHERE name = ? and password = ?";
-        try {
-            preparedStatement = connection.prepareStatement(GET_USER);
-            preparedStatement.setString(1, userName);
-            preparedStatement.setString(2, password);
+        ResultSet resultSet = null;
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try (PreparedStatement statement = ConnectionDB.getInstance()
+                .getConnection()
+                .prepareStatement(GET_USER)) {
+
+            statement.setString(1, userName);
+            statement.setString(2, password);
+
+            resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                user.setName(resultSet.getString(1));
-                user.setPassword(resultSet.getString(2));
+                user.setName(resultSet.getString("name"));
+                user.setPassword(resultSet.getString("password"));
             }
-            resultSet.close();
         } catch (SQLException e) {
+            System.out.println("here is problem");
             e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
         } finally {
             try {
-                preparedStatement.close();
+                if (resultSet != null) {
+                    resultSet.close();
+                } else {
+                    System.out.println("resultSet is null");
+                    // logging that resultSet is null
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -89,19 +87,16 @@ public final class UserDAO implements IUserDAO {
     @Override
     public void deleteUser(String userName) {
         final String DELETE_USER = "DELETE FROM user WHERE name = ?";
-        try {
-            preparedStatement = connection.prepareStatement(DELETE_USER);
-            preparedStatement.setString(1, userName);
-            preparedStatement.executeUpdate();
+
+        try (PreparedStatement statement = ConnectionDB.getInstance()
+                .getConnection()
+                .prepareStatement(DELETE_USER)) {
+
+            statement.setString(1, userName);
+            statement.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
-        } finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

@@ -14,13 +14,7 @@ import java.util.List;
  * @author Evgeniy Presnov
  */
 public final class BookDAO implements IBookDAO {
-    private Connection connection;
-    private PreparedStatement preparedStatement;
     private LogHandler logHandler = new LogHandler(this);
-
-    public BookDAO() {
-        connection = ConnectionDB.getInstance().getConnection();
-    }
 
     /**
      *
@@ -29,21 +23,17 @@ public final class BookDAO implements IBookDAO {
     @Override
     public void addBook(Book book) {
         final String ADD_BOOK = "INSERT INTO book VALUES(?, ?, ?)";
-        try {
-            preparedStatement = connection.prepareStatement(ADD_BOOK);
-            preparedStatement.setString(1, book.getBookID());
-            preparedStatement.setString(2, book.getTitle());
-            preparedStatement.setString(3, book.getAuthor());
-            preparedStatement.executeUpdate();
+
+        try (PreparedStatement statement = ConnectionDB.getInstance()
+                .getConnection()
+                .prepareStatement(ADD_BOOK)) {
+
+            statement.setString(1, book.getBookID());
+            statement.setString(2, book.getTitle());
+            statement.setString(3, book.getAuthor());
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
-        } finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -54,21 +44,17 @@ public final class BookDAO implements IBookDAO {
     @Override
     public void updateBook(Book book) {
         final String UPDATE_BOOK = "UPDATE book SET title = ?, author = ? WHERE book_id = ?";
-        try {
-            preparedStatement = connection.prepareStatement(UPDATE_BOOK);
-            preparedStatement.setString(1, book.getTitle());
-            preparedStatement.setString(2, book.getAuthor());
-            preparedStatement.setString(3, book.getBookID());
-            preparedStatement.executeUpdate();
+
+        try (PreparedStatement statement = ConnectionDB.getInstance()
+                .getConnection()
+                .prepareStatement(UPDATE_BOOK)) {
+
+            statement.setString(1, book.getTitle());
+            statement.setString(2, book.getAuthor());
+            statement.setString(3, book.getBookID());
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
-        } finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -79,19 +65,15 @@ public final class BookDAO implements IBookDAO {
     @Override
     public void deleteBook(String bookID) {
         final String DELETE_BOOK = "DELETE FROM book WHERE book_id = ?";
-        try {
-            preparedStatement = connection.prepareStatement(DELETE_BOOK);
-            preparedStatement.setString(1, bookID);
-            preparedStatement.executeUpdate();
+
+        try (PreparedStatement statement = ConnectionDB.getInstance()
+                .getConnection()
+                .prepareStatement(DELETE_BOOK)) {
+
+            statement.setString(1, bookID);
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
-        } finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -103,10 +85,13 @@ public final class BookDAO implements IBookDAO {
     public List<Book> getListBooks() {
         final String GET_LIST_BOOKS = "SELECT book_id, title, author FROM book";
         List<Book> listBooks = new ArrayList<>();
-        try {
-            preparedStatement = connection.prepareStatement(GET_LIST_BOOKS);
-            ResultSet resultSet = preparedStatement.executeQuery();
+        ResultSet resultSet = null;
 
+        try (PreparedStatement statement = ConnectionDB.getInstance()
+                .getConnection()
+                .prepareStatement(GET_LIST_BOOKS)) {
+
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Book book = new Book();
                 book.setBookID(resultSet.getString("book_id"));
@@ -114,13 +99,15 @@ public final class BookDAO implements IBookDAO {
                 book.setAuthor(resultSet.getString("author"));
                 listBooks.add(book);
             }
-            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
         } finally {
             try {
-                preparedStatement.close();
+                if (resultSet != null) {
+                    resultSet.close();
+                } else {
+                    // logging that resultSet is null
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -137,23 +124,30 @@ public final class BookDAO implements IBookDAO {
     public Book findBookById(String bookID) {
         final String FIND_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = ?";
         Book book =  new Book();
-        try {
-            preparedStatement = connection.prepareStatement(FIND_BOOK_BY_ID);
-            preparedStatement.setString(1, bookID);
+        ResultSet resultSet = null;
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+        try (PreparedStatement statement = ConnectionDB.getInstance()
+                .getConnection()
+                .prepareStatement(FIND_BOOK_BY_ID)) {
+
+            statement.setString(1, bookID);
+
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 book.setBookID(resultSet.getString("book_id"));
                 book.setTitle(resultSet.getString("title"));
                 book.setAuthor(resultSet.getString("author"));
             }
-            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            logHandler.logError(e.fillInStackTrace());
         } finally {
             try {
-                preparedStatement.close();
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                else {
+                    // logging that resultSet is null
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
