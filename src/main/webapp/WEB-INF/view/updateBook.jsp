@@ -13,7 +13,7 @@
         <table border="0">
             <tr>
                 <td>ID</td>
-                <td style="color:red;">${book.bookID}</td>
+                <td style="color:black;">${book.bookID}</td>
             </tr>
             <tr>
                 <td>Title: </td>

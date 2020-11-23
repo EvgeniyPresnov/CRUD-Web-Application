@@ -36,13 +36,7 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        IUserDAO userDAO = null;
-        try {
-            userDAO = new UserDAO();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        IUserDAO userDAO = new UserDAO();
         User user = new User();
         LogHandler logHandler = new LogHandler(this);
 

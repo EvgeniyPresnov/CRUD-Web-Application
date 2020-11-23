@@ -21,12 +21,7 @@ public class LogoutServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        IUserDAO userDAO = null;
-        try {
-            userDAO = new UserDAO();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        IUserDAO userDAO = new UserDAO();
         LogHandler logHandler = new LogHandler(this);
 
         String user = (String) req.getSession().getAttribute("loginedUser");

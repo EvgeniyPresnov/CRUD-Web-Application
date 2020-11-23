@@ -28,7 +28,7 @@ public class UserDAOTest {
     }
 
     @Test
-    public void checkPasswordAdminUserTest() throws SQLException {
+    public void checkPasswordAdminUserTest() {
         IUserDAO userDAO = new UserDAO();
 
         String userName = "admin";
@@ -41,7 +41,7 @@ public class UserDAOTest {
     }
 
     @Test
-    public void checkNameDefaultUserTest() throws SQLException {
+    public void checkNameDefaultUserTest() {
         IUserDAO userDAO = new UserDAO();
         User user = new User();
 

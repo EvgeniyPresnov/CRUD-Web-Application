@@ -59,6 +59,8 @@ public class UpdateBookServlet extends HttpServlet {
         IBookDAO bookDAO = new BookDAO();
         bookDAO.updateBook(book);
 
+        req.setAttribute("book", book);
+
         logHandler.logInfo("The book with bookID = " + bookID + " was updated to " +
                 " new title '" + book.getTitle() + "' and new author " + book.getAuthor());
 

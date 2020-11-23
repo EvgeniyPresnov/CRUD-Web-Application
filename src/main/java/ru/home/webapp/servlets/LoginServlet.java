@@ -1,6 +1,10 @@
 package ru.home.webapp.servlets;
 
 import ru.home.webapp.logging.LogHandler;
+import ru.home.webapp.model.dao.IUserDAO;
+import ru.home.webapp.model.dao.UserDAO;
+import ru.home.webapp.model.entities.User;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -8,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 /**
  * Class implements the logic of logging in to the application
@@ -18,21 +23,20 @@ import java.io.PrintWriter;
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * Display the page of logging in
+    /*
+     Display the page of logging in
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(req, resp);
     }
 
-    /**
-     * After the user has filled information about themselves and clicked on button.
-     * This method will be executed
+    /*
+     After the user has filled information about themselves and clicked on button.
+     This method will be executed
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         String userName = req.getParameter("username");
         String password = req.getParameter("password");
         String submitType = req.getParameter("submit");
@@ -40,18 +44,39 @@ public class LoginServlet extends HttpServlet {
 
         LogHandler logHandler = new LogHandler(this);
 
-        /**
-         *  Checking for filling in the fields on the form.
-         *  If all fields are not empty
+         /*
+         Checking for filling in the fields on the form.
+
+         If all fields are not empty
          */
         if (submitType.equals("login") && !userName.equals("") && !password.equals("")) {
+            IUserDAO userDAO = new UserDAO();
+            User user = userDAO.getUser(userName, password);
+             /*
+             The search for a user in the database
+             */
+            if ((user.getName() != null && user.getPassword() != null) &&
+                    user.getName().equals(userName) && user.getPassword().equals(password)) {
+                logHandler.logInfo("User '" + loginedUser + "' in logged in");
 
-            logHandler.logInfo("User '" + loginedUser + "' in logged in");
+                resp.sendRedirect(req.getContextPath() + "/home");
+            }
+            /*
+             If the user is not in the database when logging in, the user will see
+             the warning message
+             */
+            else {
+                logHandler.logWarning(MessageBox.USER_NOT_FOUND.message);
 
-            resp.sendRedirect(req.getContextPath() + "/home");
+                PrintWriter out = resp.getWriter();
+                out.println(getHTMLPage(MessageBox.USER_NOT_FOUND_INFO_MSG_FOR_USER.message));
+                out.close();
+
+                req.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(req, resp);
+            }
         }
-        /**
-         * If at least one field is empty, user will see the warning message
+        /*
+         If at least one field is empty, user will see the warning message
          */
         else if (submitType.equals("login") && userName.equals("") || password.equals("")) {
             logHandler.logWarning(MessageBox.FIELDS_EMPTY.message);
@@ -59,20 +84,6 @@ public class LoginServlet extends HttpServlet {
             PrintWriter out = resp.getWriter();
             out.println(getHTMLPage(MessageBox.FIELDS_EMPTY_INFO_MSG_FOR_USER.message));
             out.close();
-
-        }
-        /**
-         * If the user is not in the database when logging in, the user will see
-         * the warning message
-         */
-        else {
-            logHandler.logWarning(MessageBox.USER_NOT_FOUND.message);
-
-            PrintWriter out = resp.getWriter();
-            out.println(getHTMLPage(MessageBox.USER_NOT_FOUND_INFO_MSG_FOR_USER.message));
-            out.close();
-
-            req.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(req, resp);
         }
     }
 
