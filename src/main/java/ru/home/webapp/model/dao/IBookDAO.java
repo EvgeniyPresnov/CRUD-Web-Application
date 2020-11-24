@@ -1,6 +1,7 @@
 package ru.home.webapp.model.dao;
 
 import ru.home.webapp.model.entities.Book;
+import ru.home.webapp.utils.ConnectionDBException;
 
 import java.util.List;
 
@@ -10,9 +11,9 @@ import java.util.List;
  * @author Evgeniy Presnov
  */
 public interface IBookDAO {
-    void addBook(Book book);
-    void updateBook(Book book);
-    void deleteBook(String bookID);
-    List<Book> getListBooks();
-    Book findBookById(String bookID);
+    void addBook(Book book) throws DAOException, ConnectionDBException;
+    void updateBook(Book book) throws DAOException, ConnectionDBException;
+    void deleteBook(String bookID) throws DAOException, ConnectionDBException;
+    List<Book> getListBooks() throws DAOException, ConnectionDBException;
+    Book findBookById(String bookID) throws DAOException, ConnectionDBException;
 }

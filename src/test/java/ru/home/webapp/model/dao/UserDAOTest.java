@@ -2,33 +2,55 @@ package ru.home.webapp.model.dao;
 
 import ru.home.webapp.model.entities.User;
 
+import java.io.IOException;
 import java.net.PasswordAuthentication;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ru.home.webapp.utils.ConnectionDB;
+import ru.home.webapp.utils.ConnectionDBException;
 
 public class UserDAOTest {
     private Connection connection;
-    private static final String URL = "jdbc:mysql://localhost:3306/crud_web_app";
-    private static final String USER = "evgen";
-    private static final String PASSWORD = "Evg3n_1995";
+    private static String user = null;
+    private static String password = null;
+    private static String url = null;
+    private static String driver = null;
+
+
+    private void loadProperties() throws ConnectionDBException {
+        Properties properties = new Properties();
+        try {
+            properties.load(ConnectionDB.class.getResourceAsStream("/db.properties"));
+            user = properties.getProperty("user");
+            password = properties.getProperty("password");
+            url = properties.getProperty("url");
+            driver = properties.getProperty("driver");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ConnectionDBException("Could not read the file: ", e);
+        }
+    }
 
     @Before
-    public void before() {
+    public void before() throws ConnectionDBException {
         try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-        } catch (SQLException e) {
+            loadProperties();
+            Class.forName(driver);
+            connection = DriverManager.getConnection(url, user, password);
+        } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void checkPasswordAdminUserTest() {
+    public void checkPasswordAdminUserTest() throws ConnectionDBException, DAOException {
         IUserDAO userDAO = new UserDAO();
 
         String userName = "admin";
@@ -41,7 +63,7 @@ public class UserDAOTest {
     }
 
     @Test
-    public void checkNameDefaultUserTest() {
+    public void checkNameDefaultUserTest() throws ConnectionDBException, DAOException {
         IUserDAO userDAO = new UserDAO();
         User user = new User();
 

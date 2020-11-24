@@ -1,6 +1,7 @@
 package ru.home.webapp.servlets;
 
 import ru.home.webapp.logging.LogHandler;
+import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IUserDAO;
 import ru.home.webapp.model.dao.UserDAO;
 
@@ -27,7 +28,11 @@ public class LogoutServlet extends HttpServlet {
         String user = (String) req.getSession().getAttribute("loginedUser");
         req.setAttribute("deletedUser", user);
 
-        userDAO.deleteUser(user);
+        try {
+            userDAO.deleteUser(user);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        }
         logHandler.logInfo("User '" + user + "' is logged out");
         req.getRequestDispatcher("/WEB-INF/view/logout.jsp").forward(req, resp);
     }

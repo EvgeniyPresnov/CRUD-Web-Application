@@ -2,9 +2,12 @@ package ru.home.webapp.servlets;
 
 
 import ru.home.webapp.logging.LogHandler;
+import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IUserDAO;
 import ru.home.webapp.model.dao.UserDAO;
 import ru.home.webapp.model.entities.User;
+import ru.home.webapp.utils.ConnectionDBException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
@@ -56,7 +59,13 @@ public class RegisterServlet extends HttpServlet {
             if (password.equals(repeatPassword)) {
                 user.setName(userName);
                 user.setPassword(password);
-                userDAO.addUser(user);
+                try {
+                    userDAO.addUser(user);
+                } catch (DAOException e) {
+                    e.printStackTrace();
+                } catch (ConnectionDBException e) {
+                    e.printStackTrace();
+                }
 
                 HttpSession session = req.getSession();
                 session.setAttribute("loginedUser", user.getName());

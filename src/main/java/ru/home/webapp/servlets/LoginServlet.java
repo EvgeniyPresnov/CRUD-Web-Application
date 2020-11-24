@@ -1,9 +1,11 @@
 package ru.home.webapp.servlets;
 
 import ru.home.webapp.logging.LogHandler;
+import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IUserDAO;
 import ru.home.webapp.model.dao.UserDAO;
 import ru.home.webapp.model.entities.User;
+import ru.home.webapp.utils.ConnectionDBException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -51,7 +53,14 @@ public class LoginServlet extends HttpServlet {
          */
         if (submitType.equals("login") && !userName.equals("") && !password.equals("")) {
             IUserDAO userDAO = new UserDAO();
-            User user = userDAO.getUser(userName, password);
+            User user = null;
+            try {
+                user = userDAO.getUser(userName, password);
+            } catch (DAOException e) {
+                e.printStackTrace();
+            } catch (ConnectionDBException e) {
+                e.printStackTrace();
+            }
              /*
              The search for a user in the database
              */

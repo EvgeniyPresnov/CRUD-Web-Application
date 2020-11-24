@@ -3,6 +3,7 @@ package ru.home.webapp.model.dao;
 import junit.framework.Assert;
 import ru.home.webapp.model.entities.Book;
 import org.junit.Test;
+import ru.home.webapp.utils.ConnectionDBException;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ import static org.junit.Assert.*;
 public class BookDAOTest {
 
     @Test
-    public void checkTitleByBookIDTest() {
+    public void checkTitleByBookIDTest() throws ConnectionDBException, DAOException {
         String expected = "Nineteen Eighty-Four";
         String bookID = "5";
 
@@ -23,7 +24,7 @@ public class BookDAOTest {
     }
 
     @Test
-    public void checkAuthorByBookIDTest() {
+    public void checkAuthorByBookIDTest() throws ConnectionDBException, DAOException {
         String expected = "Jane Austen";
         String bookID = "2";
 
@@ -49,7 +50,7 @@ public class BookDAOTest {
     }
 
     @Test
-    public void checkListTest() {
+    public void checkListTest() throws ConnectionDBException, DAOException {
         IBookDAO bookDAO = new BookDAO();
         List<Book> listBooks = bookDAO.getListBooks();
 

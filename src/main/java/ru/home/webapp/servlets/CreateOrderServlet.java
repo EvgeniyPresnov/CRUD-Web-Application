@@ -2,8 +2,10 @@ package ru.home.webapp.servlets;
 
 import ru.home.webapp.logging.LogHandler;
 import ru.home.webapp.model.dao.BookDAO;
+import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IBookDAO;
 import ru.home.webapp.model.entities.Book;
+import ru.home.webapp.utils.ConnectionDBException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -64,7 +66,13 @@ public class CreateOrderServlet extends HttpServlet {
             book.setAuthor(author);
 
             IBookDAO bookDAO = new BookDAO();
-            bookDAO.addBook(book);
+            try {
+                bookDAO.addBook(book);
+            } catch (DAOException e) {
+                e.printStackTrace();
+            } catch (ConnectionDBException e) {
+                e.printStackTrace();
+            }
 
             logHandler.logInfo("The book '" + title + "' written by " + author + " was added to the list");
 

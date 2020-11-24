@@ -1,8 +1,10 @@
 package ru.home.webapp.servlets;
 
 import ru.home.webapp.model.dao.BookDAO;
+import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IBookDAO;
 import ru.home.webapp.model.entities.Book;
+import ru.home.webapp.utils.ConnectionDBException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,9 +26,15 @@ public class BookListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Book> listBooks;
+        List<Book> listBooks = null;
         IBookDAO bookDAO = new BookDAO();
-        listBooks = bookDAO.getListBooks();
+        try {
+            listBooks = bookDAO.getListBooks();
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (ConnectionDBException e) {
+            e.printStackTrace();
+        }
 
         req.setAttribute("listBooks", listBooks);
 

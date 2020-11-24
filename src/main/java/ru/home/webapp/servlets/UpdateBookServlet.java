@@ -2,8 +2,10 @@ package ru.home.webapp.servlets;
 
 import ru.home.webapp.logging.LogHandler;
 import ru.home.webapp.model.dao.BookDAO;
+import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IBookDAO;
 import ru.home.webapp.model.entities.Book;
+import ru.home.webapp.utils.ConnectionDBException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -31,7 +33,14 @@ public class UpdateBookServlet extends HttpServlet {
         String bookID = req.getParameter("bookID");
 
         IBookDAO bookDAO = new BookDAO();
-        Book book = bookDAO.findBookById(bookID);
+        Book book = null;
+        try {
+            book = bookDAO.findBookById(bookID);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (ConnectionDBException e) {
+            e.printStackTrace();
+        }
 
         req.setAttribute("book", book);
 
@@ -57,7 +66,13 @@ public class UpdateBookServlet extends HttpServlet {
         book.setAuthor(author);
 
         IBookDAO bookDAO = new BookDAO();
-        bookDAO.updateBook(book);
+        try {
+            bookDAO.updateBook(book);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (ConnectionDBException e) {
+            e.printStackTrace();
+        }
 
         req.setAttribute("book", book);
 

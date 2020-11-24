@@ -3,6 +3,7 @@ package ru.home.webapp.model.dao;
 import ru.home.webapp.logging.LogHandler;
 import ru.home.webapp.model.entities.Book;
 import ru.home.webapp.utils.ConnectionDB;
+import ru.home.webapp.utils.ConnectionDBException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public final class BookDAO implements IBookDAO {
      * @param book that the user wants to add to the list
      */
     @Override
-    public void addBook(Book book) {
+    public void addBook(Book book) throws DAOException, ConnectionDBException {
         final String ADD_BOOK = "INSERT INTO book VALUES(?, ?, ?)";
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
@@ -34,6 +35,10 @@ public final class BookDAO implements IBookDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DAOException("Could not add a book into the list", e);
+        } catch (ConnectionDBException e) {
+            e.printStackTrace();
+            throw new ConnectionDBException("There is no database connection: ", e);
         }
     }
 
@@ -42,7 +47,7 @@ public final class BookDAO implements IBookDAO {
      * @param book that the user wants to edit from the list
      */
     @Override
-    public void updateBook(Book book) {
+    public void updateBook(Book book) throws DAOException, ConnectionDBException {
         final String UPDATE_BOOK = "UPDATE book SET title = ?, author = ? WHERE book_id = ?";
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
@@ -55,6 +60,10 @@ public final class BookDAO implements IBookDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DAOException("Could not edit the book from the list", e);
+        } catch (ConnectionDBException e) {
+            e.printStackTrace();
+            throw new ConnectionDBException("There is no database connection: ", e);
         }
     }
 
@@ -63,7 +72,7 @@ public final class BookDAO implements IBookDAO {
      * @param bookID is the ID of the book that the user wants to delete
      */
     @Override
-    public void deleteBook(String bookID) {
+    public void deleteBook(String bookID) throws DAOException, ConnectionDBException {
         final String DELETE_BOOK = "DELETE FROM book WHERE book_id = ?";
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
@@ -74,6 +83,10 @@ public final class BookDAO implements IBookDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new DAOException("Could not delete the book from the list", e);
+        } catch (ConnectionDBException e) {
+            e.printStackTrace();
+            throw new ConnectionDBException("There is no database connection: ", e);
         }
     }
 
@@ -82,10 +95,10 @@ public final class BookDAO implements IBookDAO {
      * @return list of books
      */
     @Override
-    public List<Book> getListBooks() {
+    public List<Book> getListBooks() throws DAOException, ConnectionDBException {
         final String GET_LIST_BOOKS = "SELECT book_id, title, author FROM book";
         List<Book> listBooks = new ArrayList<>();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
                 .getConnection()
@@ -99,18 +112,13 @@ public final class BookDAO implements IBookDAO {
                 book.setAuthor(resultSet.getString("author"));
                 listBooks.add(book);
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                } else {
-                    // logging that resultSet is null
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            throw new DAOException("Could not get the list of books", e);
+        } catch (ConnectionDBException e) {
+            e.printStackTrace();
+            throw new ConnectionDBException("There is no database connection: ", e);
         }
         return listBooks;
     }
@@ -121,10 +129,10 @@ public final class BookDAO implements IBookDAO {
      * @return book
      */
     @Override
-    public Book findBookById(String bookID) {
+    public Book findBookById(String bookID) throws DAOException, ConnectionDBException {
         final String FIND_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = ?";
         Book book =  new Book();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
                 .getConnection()
@@ -138,19 +146,13 @@ public final class BookDAO implements IBookDAO {
                 book.setTitle(resultSet.getString("title"));
                 book.setAuthor(resultSet.getString("author"));
             }
+            resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null) {
-                    resultSet.close();
-                }
-                else {
-                    // logging that resultSet is null
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            throw new DAOException("Could not find the book by id ", e);
+        } catch (ConnectionDBException e) {
+            e.printStackTrace();
+            throw new ConnectionDBException("There is no database connection: ", e);
         }
         return book;
     }

@@ -19,20 +19,25 @@ public final class ConnectionDB {
     private static String url = null;
     private static String driver = null;
 
-    private ConnectionDB() {
+    private ConnectionDB() throws ConnectionDBException {
         try {
             loadProperties();
             Class.forName(driver);
             connection = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+            throw new ConnectionDBException("Driver " + driver + " not found: ", e);
         }
-
     }
 
-    public static synchronized ConnectionDB getInstance() {
+    public static synchronized ConnectionDB getInstance() throws ConnectionDBException {
         if (instance == null) {
-            instance = new ConnectionDB();
+            try {
+                instance = new ConnectionDB();
+            } catch (ConnectionDBException e) {
+                e.printStackTrace();
+                throw new ConnectionDBException("There is no database connection: ", e);
+            }
         }
         return instance;
     }
@@ -41,15 +46,16 @@ public final class ConnectionDB {
         return connection;
     }
 
-    public void closeConnection()  {
+    public void closeConnection() throws ConnectionDBException {
         try {
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new ConnectionDBException("The connection to database was not close: ", e);
         }
     }
 
-    private void loadProperties() {
+    private void loadProperties() throws ConnectionDBException {
         Properties properties = new Properties();
         try {
             properties.load(ConnectionDB.class.getResourceAsStream("/db.properties"));
@@ -59,6 +65,7 @@ public final class ConnectionDB {
             driver = properties.getProperty("driver");
         } catch (IOException e) {
             e.printStackTrace();
+            throw new ConnectionDBException("Could not read the file: ", e);
         }
     }
 }

@@ -2,7 +2,10 @@ package ru.home.webapp.servlets;
 
 import ru.home.webapp.logging.LogHandler;
 import ru.home.webapp.model.dao.BookDAO;
+import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IBookDAO;
+import ru.home.webapp.utils.ConnectionDBException;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +28,13 @@ public class DeleteBookServlet extends HttpServlet {
         LogHandler logHandler = new LogHandler(this);
         IBookDAO bookDAO = new BookDAO();
 
-        bookDAO.deleteBook(bookID);
+        try {
+            bookDAO.deleteBook(bookID);
+        } catch (DAOException e) {
+            e.printStackTrace();
+        } catch (ConnectionDBException e) {
+            e.printStackTrace();
+        }
 
         logHandler.logInfo("The book with bookID = " + bookID +  " was deleted from the list");
 

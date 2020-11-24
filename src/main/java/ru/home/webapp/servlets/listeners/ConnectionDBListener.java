@@ -2,6 +2,8 @@ package ru.home.webapp.servlets.listeners;
 
 import ru.home.webapp.logging.LogHandler;
 import ru.home.webapp.utils.ConnectionDB;
+import ru.home.webapp.utils.ConnectionDBException;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -24,7 +26,12 @@ public final class ConnectionDBListener implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        ConnectionDB.getInstance();
+        try {
+            ConnectionDB.getInstance();
+        } catch (ConnectionDBException e) {
+            e.printStackTrace();
+            //logging
+        }
         logHandler.logInfo(INIT_CONNECTION);
     }
 
@@ -33,7 +40,14 @@ public final class ConnectionDBListener implements ServletContextListener {
      */
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        ConnectionDB.getInstance().closeConnection();
+
+        try {
+            ConnectionDB.getInstance().closeConnection();
+        } catch (ConnectionDBException e) {
+            e.printStackTrace();
+            //logging
+        }
+
         logHandler.logInfo(CLOSE_CONNECTION);
     }
 }
