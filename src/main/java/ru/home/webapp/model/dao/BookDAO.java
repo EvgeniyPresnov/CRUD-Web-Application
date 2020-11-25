@@ -1,6 +1,6 @@
 package ru.home.webapp.model.dao;
 
-import ru.home.webapp.logging.LogHandler;
+import org.apache.log4j.Logger;
 import ru.home.webapp.model.entities.Book;
 import ru.home.webapp.utils.ConnectionDB;
 import ru.home.webapp.utils.ConnectionDBException;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author Evgeniy Presnov
  */
 public final class BookDAO implements IBookDAO {
-    private LogHandler logHandler = new LogHandler(this);
+    private static Logger logger = Logger.getLogger(BookDAO.class.getName());
 
     /**
      *
@@ -35,9 +35,11 @@ public final class BookDAO implements IBookDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException("Could not add a book into the list", e);
+            logger.error("Could not add a book into the list: ", e);
+            throw new DAOException("Could not add a book into the list: ", e);
         } catch (ConnectionDBException e) {
             e.printStackTrace();
+            logger.error("There is no database connection: ", e);
             throw new ConnectionDBException("There is no database connection: ", e);
         }
     }
@@ -60,9 +62,11 @@ public final class BookDAO implements IBookDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException("Could not edit the book from the list", e);
+            logger.error("Could not edit the book from the list: ", e);
+            throw new DAOException("Could not edit the book from the list: ", e);
         } catch (ConnectionDBException e) {
             e.printStackTrace();
+            logger.error("There is no database connection: ", e);
             throw new ConnectionDBException("There is no database connection: ", e);
         }
     }
@@ -83,9 +87,11 @@ public final class BookDAO implements IBookDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException("Could not delete the book from the list", e);
+            logger.error("Could not delete the book from the list: ", e);
+            throw new DAOException("Could not delete the book from the list: ", e);
         } catch (ConnectionDBException e) {
             e.printStackTrace();
+            logger.error("There is no database connection: ", e);
             throw new ConnectionDBException("There is no database connection: ", e);
         }
     }
@@ -115,9 +121,11 @@ public final class BookDAO implements IBookDAO {
             resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException("Could not get the list of books", e);
+            logger.error("Could not get the list of books: ", e);
+            throw new DAOException("Could not get the list of books: ", e);
         } catch (ConnectionDBException e) {
             e.printStackTrace();
+            logger.error("There is no database connection: ", e);
             throw new ConnectionDBException("There is no database connection: ", e);
         }
         return listBooks;
@@ -149,9 +157,11 @@ public final class BookDAO implements IBookDAO {
             resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new DAOException("Could not find the book by id ", e);
+            logger.error("Could not find the book by id: ", e);
+            throw new DAOException("Could not find the book by id: ", e);
         } catch (ConnectionDBException e) {
             e.printStackTrace();
+            logger.error("There is no database connection: ", e);
             throw new ConnectionDBException("There is no database connection: ", e);
         }
         return book;

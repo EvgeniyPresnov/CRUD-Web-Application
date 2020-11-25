@@ -1,6 +1,6 @@
 package ru.home.webapp.servlets;
 
-import ru.home.webapp.logging.LogHandler;
+import org.apache.log4j.Logger;
 import ru.home.webapp.model.dao.BookDAO;
 import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IBookDAO;
@@ -20,24 +20,20 @@ import java.io.IOException;
 @WebServlet("/deleteBook")
 public class DeleteBookServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static Logger logger = Logger.getLogger(DeleteBookServlet.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String bookID = req.getParameter("bookID");
-
-        LogHandler logHandler = new LogHandler(this);
         IBookDAO bookDAO = new BookDAO();
 
         try {
             bookDAO.deleteBook(bookID);
-        } catch (DAOException e) {
+        } catch (DAOException | ConnectionDBException e) {
             e.printStackTrace();
-        } catch (ConnectionDBException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
-
-        logHandler.logInfo("The book with bookID = " + bookID +  " was deleted from the list");
-
+        logger.info("The book with bookID = " + bookID +  " was deleted from the list");
         resp.sendRedirect(req.getContextPath() + "/bookList");
     }
 

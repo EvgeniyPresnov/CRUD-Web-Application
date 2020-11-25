@@ -1,6 +1,6 @@
 package ru.home.webapp.servlets;
 
-import ru.home.webapp.logging.LogHandler;
+import org.apache.log4j.Logger;
 import ru.home.webapp.model.dao.BookDAO;
 import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IBookDAO;
@@ -22,11 +22,10 @@ import java.io.IOException;
 @WebServlet("/updateBook")
 public class UpdateBookServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static Logger logger = Logger.getLogger(UpdateBookServlet.class.getName());
 
-    private LogHandler logHandler = new LogHandler(this);
-
-    /**
-     * Display the edit page of the book
+    /*
+     Display the edit page of the book
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -36,23 +35,21 @@ public class UpdateBookServlet extends HttpServlet {
         Book book = null;
         try {
             book = bookDAO.findBookById(bookID);
-        } catch (DAOException e) {
-            e.printStackTrace();
-        } catch (ConnectionDBException e) {
+        } catch (DAOException | ConnectionDBException e) {
             e.printStackTrace();
         }
 
         req.setAttribute("book", book);
 
-        logHandler.logInfo("The book with bookID = " + bookID  +
+        logger.info("The book with bookID = " + bookID  +
                 " , the title '" + book.getTitle() + "' and the author: " + book.getAuthor());
 
         req.getRequestDispatcher("/WEB-INF/view/updateBook.jsp").forward(req, resp);
     }
 
-    /**
-     * After the user has edited information about book and clicked Submit.
-     * This method will be executed
+    /*
+     After the user has edited information about book and clicked Submit.
+     This method will be executed
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -68,15 +65,12 @@ public class UpdateBookServlet extends HttpServlet {
         IBookDAO bookDAO = new BookDAO();
         try {
             bookDAO.updateBook(book);
-        } catch (DAOException e) {
-            e.printStackTrace();
-        } catch (ConnectionDBException e) {
+        } catch (DAOException | ConnectionDBException e) {
             e.printStackTrace();
         }
-
         req.setAttribute("book", book);
 
-        logHandler.logInfo("The book with bookID = " + bookID + " was updated to " +
+        logger.info("The book with bookID = " + bookID + " was updated to " +
                 " new title '" + book.getTitle() + "' and new author " + book.getAuthor());
 
         resp.sendRedirect(req.getContextPath() + "/bookList");

@@ -1,5 +1,7 @@
 package ru.home.webapp.utils;
 
+
+import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,6 +14,7 @@ import java.util.Properties;
  * @author Evgeniy Presnov
  */
 public final class ConnectionDB {
+    private static Logger logger = Logger.getLogger(ConnectionDB.class.getName());
     private static ConnectionDB instance = null;
     private Connection connection = null;
     private static String user = null;
@@ -26,6 +29,7 @@ public final class ConnectionDB {
             connection = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
+            logger.error("Driver " + driver + " not found: ", e);
             throw new ConnectionDBException("Driver " + driver + " not found: ", e);
         }
     }
@@ -36,6 +40,7 @@ public final class ConnectionDB {
                 instance = new ConnectionDB();
             } catch (ConnectionDBException e) {
                 e.printStackTrace();
+                logger.error("There is no database connection: ", e);
                 throw new ConnectionDBException("There is no database connection: ", e);
             }
         }
@@ -51,6 +56,7 @@ public final class ConnectionDB {
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("The connection to database was not close: ", e);
             throw new ConnectionDBException("The connection to database was not close: ", e);
         }
     }
@@ -65,6 +71,7 @@ public final class ConnectionDB {
             driver = properties.getProperty("driver");
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("Could not read the file: ", e);
             throw new ConnectionDBException("Could not read the file: ", e);
         }
     }

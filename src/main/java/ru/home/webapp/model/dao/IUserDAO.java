@@ -11,5 +11,5 @@ import ru.home.webapp.utils.ConnectionDBException;
 public interface IUserDAO {
     void addUser(User user) throws DAOException, ConnectionDBException;
     User getUser(String userName, String password) throws DAOException, ConnectionDBException;
-    void deleteUser(String userName) throws DAOException;
+    void deleteUser(String userName) throws DAOException, ConnectionDBException;
 }

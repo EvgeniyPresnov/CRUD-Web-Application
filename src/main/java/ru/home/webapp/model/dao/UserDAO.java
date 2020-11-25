@@ -1,6 +1,6 @@
 package ru.home.webapp.model.dao;
 
-import ru.home.webapp.logging.LogHandler;
+import org.apache.log4j.Logger;
 import ru.home.webapp.model.entities.User;
 import ru.home.webapp.utils.ConnectionDB;
 import ru.home.webapp.utils.ConnectionDBException;
@@ -15,7 +15,7 @@ import java.sql.SQLException;
  * @author Evgeniy Presnov
  */
 public final class UserDAO implements IUserDAO {
-    private LogHandler logHandler = new LogHandler(this);
+    private static Logger logger = Logger.getLogger(UserDAO.class.getName());
 
     /**
      *
@@ -33,10 +33,12 @@ public final class UserDAO implements IUserDAO {
             statement.setString(2, user.getPassword());
             statement.executeUpdate();
         } catch (SQLException e) {
-            //e.printStackTrace();
-            throw new DAOException("Could not add a new user ", e);
+            e.printStackTrace();
+            logger.error("Could not add a new user: ", e);
+            throw new DAOException("Could not add a new user: ", e);
         } catch (ConnectionDBException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
+            logger.error("There is no database connection: ", e);
             throw new ConnectionDBException("There is no database connection: ", e);
         }
     }
@@ -68,9 +70,11 @@ public final class UserDAO implements IUserDAO {
             resultSet.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("Could not get the user: ", e);
             throw new DAOException("Could not get the user: ", e);
         } catch (ConnectionDBException e) {
             e.printStackTrace();
+            logger.error("There is no database connection: ", e);
             throw new ConnectionDBException("There is no database connection: ", e);
         }
         return user;
@@ -81,7 +85,7 @@ public final class UserDAO implements IUserDAO {
      * @param userName name of the user who will be deleted from database
      */
     @Override
-    public void deleteUser(String userName) throws DAOException {
+    public void deleteUser(String userName) throws DAOException, ConnectionDBException {
         final String DELETE_USER = "DELETE FROM user WHERE name = ?";
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
@@ -92,9 +96,12 @@ public final class UserDAO implements IUserDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+            logger.error("Could not delete the user: ", e);
             throw new DAOException("Could not delete the user: ", e);
         } catch (ConnectionDBException e) {
             e.printStackTrace();
+            logger.error("There is no database connection: ", e);
+            throw new ConnectionDBException("There is no database connection: ", e);
         }
     }
 }

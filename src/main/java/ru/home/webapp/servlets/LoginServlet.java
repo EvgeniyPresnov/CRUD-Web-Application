@@ -1,6 +1,6 @@
 package ru.home.webapp.servlets;
 
-import ru.home.webapp.logging.LogHandler;
+import org.apache.log4j.Logger;
 import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IUserDAO;
 import ru.home.webapp.model.dao.UserDAO;
@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
 /**
  * Class implements the logic of logging in to the application
@@ -24,6 +23,7 @@ import java.sql.SQLException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static Logger logger = Logger.getLogger(LoginServlet.class.getName());
 
     /*
      Display the page of logging in
@@ -44,8 +44,6 @@ public class LoginServlet extends HttpServlet {
         String submitType = req.getParameter("submit");
         String loginedUser = (String) req.getSession().getAttribute("loginedUser");
 
-        LogHandler logHandler = new LogHandler(this);
-
          /*
          Checking for filling in the fields on the form.
 
@@ -56,18 +54,16 @@ public class LoginServlet extends HttpServlet {
             User user = null;
             try {
                 user = userDAO.getUser(userName, password);
-            } catch (DAOException e) {
+            } catch (DAOException | ConnectionDBException e) {
                 e.printStackTrace();
-            } catch (ConnectionDBException e) {
-                e.printStackTrace();
+                logger.error(e);
             }
              /*
              The search for a user in the database
              */
             if ((user.getName() != null && user.getPassword() != null) &&
                     user.getName().equals(userName) && user.getPassword().equals(password)) {
-                logHandler.logInfo("User '" + loginedUser + "' in logged in");
-
+                logger.info("User '" + loginedUser + "' in logged in");
                 resp.sendRedirect(req.getContextPath() + "/home");
             }
             /*
@@ -75,10 +71,11 @@ public class LoginServlet extends HttpServlet {
              the warning message
              */
             else {
-                logHandler.logWarning(MessageBox.USER_NOT_FOUND.message);
+                logger.warn("The user does not find in data base");
 
                 PrintWriter out = resp.getWriter();
-                out.println(getHTMLPage(MessageBox.USER_NOT_FOUND_INFO_MSG_FOR_USER.message));
+                out.println(getHTMLPage("The user does not find in data base. " +
+                        "Please, click on Register if you don't do it"));
                 out.close();
 
                 req.getRequestDispatcher("/WEB-INF/view/login.jsp").forward(req, resp);
@@ -88,24 +85,12 @@ public class LoginServlet extends HttpServlet {
          If at least one field is empty, user will see the warning message
          */
         else if (submitType.equals("login") && userName.equals("") || password.equals("")) {
-            logHandler.logWarning(MessageBox.FIELDS_EMPTY.message);
+            logger.warn("The field User Name or Password is empty");
 
             PrintWriter out = resp.getWriter();
-            out.println(getHTMLPage(MessageBox.FIELDS_EMPTY_INFO_MSG_FOR_USER.message));
+            out.println(getHTMLPage("The field User Name or Password is empty." +
+                    " Please, try it again"));
             out.close();
-        }
-    }
-
-    private enum MessageBox {
-        USER_NOT_FOUND("The user does not find in data base"),
-        FIELDS_EMPTY("The field User Name or Password is empty"),
-        FIELDS_EMPTY_INFO_MSG_FOR_USER("The field User Name or Password is empty. Please, try it again"),
-        USER_NOT_FOUND_INFO_MSG_FOR_USER("The user does not find in data base.Please, click on Register if you don't do it");
-
-        String message;
-
-        MessageBox (String message) {
-            this.message = message;
         }
     }
 

@@ -1,6 +1,6 @@
 package ru.home.webapp.servlets;
 
-import ru.home.webapp.logging.LogHandler;
+import org.apache.log4j.Logger;
 import ru.home.webapp.model.dao.BookDAO;
 import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IBookDAO;
@@ -24,9 +24,10 @@ import java.io.PrintWriter;
 @WebServlet("/createOrder")
 public class CreateOrderServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static Logger logger = Logger.getLogger(CreateOrderServlet.class.getName());
 
-    /**
-     * Display the page for adding a book
+    /*
+     Display the page for adding a book
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -34,8 +35,8 @@ public class CreateOrderServlet extends HttpServlet {
     }
 
     /**
-     * When the user has entered information about book and clicks Submit.
-     * This method will be called
+     When the user has entered information about book and clicks Submit.
+     This method will be called
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -43,21 +44,19 @@ public class CreateOrderServlet extends HttpServlet {
         String title = req.getParameter("title");
         String author = req.getParameter("author");
 
-        LogHandler logHandler = new LogHandler(this);
-
-        /**
-         * Checking for filling in the fields on the form.
-         * If at least one field is empty, user will see the warning message ...
+        /*
+         Checking for filling in the fields on the form.
+         If at least one field is empty, user will see the warning message ...
          */
         if (bookID.equals("") || title.equals("")|| author.equals("")) {
-            logHandler.logWarning(MessageBox.FIELDS_EMPTY.message);
+            logger.warn("The field ID or Title or Author is empty");
 
             PrintWriter out = resp.getWriter();
-            out.println(getHTMLPage(MessageBox.FIELDS_EMPTY_INFO_MSG_FOR_USER.message));
+            out.println(getHTMLPage("The field ID or Title or Author is empty. Please, try it again"));
             out.close();
         }
-        /**
-         * ... Otherwise, the book will be added to the list
+        /*
+         ... Otherwise, the book will be added to the list
          */
         else {
             Book book = new Book();
@@ -68,27 +67,14 @@ public class CreateOrderServlet extends HttpServlet {
             IBookDAO bookDAO = new BookDAO();
             try {
                 bookDAO.addBook(book);
-            } catch (DAOException e) {
+            } catch (DAOException | ConnectionDBException e) {
                 e.printStackTrace();
-            } catch (ConnectionDBException e) {
-                e.printStackTrace();
+                logger.error(e);
             }
-
-            logHandler.logInfo("The book '" + title + "' written by " + author + " was added to the list");
+            logger.warn("The book '" + title + "' written by " + author + " was added to the list");
 
             req.setAttribute("book", book);
             resp.sendRedirect(req.getContextPath() + "/bookList");
-        }
-    }
-
-    private enum MessageBox {
-        FIELDS_EMPTY("The field ID or Title or Author is empty"),
-        FIELDS_EMPTY_INFO_MSG_FOR_USER("The field ID or Title or Author is empty. Please, try it again");
-
-        String message;
-
-        MessageBox (String message) {
-            this.message = message;
         }
     }
 

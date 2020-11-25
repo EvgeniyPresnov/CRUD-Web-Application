@@ -1,5 +1,6 @@
 package ru.home.webapp.servlets;
 
+import org.apache.log4j.Logger;
 import ru.home.webapp.model.dao.BookDAO;
 import ru.home.webapp.model.dao.DAOException;
 import ru.home.webapp.model.dao.IBookDAO;
@@ -23,6 +24,7 @@ import java.util.List;
 @WebServlet("/bookList")
 public class BookListServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static Logger logger = Logger.getLogger(BookListServlet.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -30,14 +32,12 @@ public class BookListServlet extends HttpServlet {
         IBookDAO bookDAO = new BookDAO();
         try {
             listBooks = bookDAO.getListBooks();
-        } catch (DAOException e) {
+        } catch (DAOException | ConnectionDBException e) {
             e.printStackTrace();
-        } catch (ConnectionDBException e) {
-            e.printStackTrace();
+            logger.error(BookListServlet.class.getMethods(),e);
         }
 
         req.setAttribute("listBooks", listBooks);
-
         req.getRequestDispatcher("/WEB-INF/view/bookList.jsp").forward(req, resp);
     }
 
