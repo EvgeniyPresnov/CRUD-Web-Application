@@ -1,7 +1,7 @@
-package ru.home.webapp.model.dao;
+package ru.home.webapp.dao;
 
 import junit.framework.Assert;
-import ru.home.webapp.model.entities.Book;
+import ru.home.webapp.domain.Book;
 import org.junit.Test;
 import ru.home.webapp.utils.ConnectionDBException;
 

@@ -8,21 +8,21 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * This class implements the logic of going to a home page when a hyperlink 'home' is clicked
+ * This class implements the logic of going to a welcome page when a hyperlink 'exit' is clicked
  *
  * @author Evgeniy Presnov
  */
-@WebServlet("/home")
-public class HomeServlet extends HttpServlet {
+@WebServlet("/exit")
+public class Exit extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/view/home.jsp").forward(req, resp);
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.sendRedirect("/welcome.html");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        doGet(req, resp);
+        super.doPost(req, resp);
     }
 }

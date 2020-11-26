@@ -1,10 +1,10 @@
 package ru.home.webapp.servlets;
 
 import org.apache.log4j.Logger;
-import ru.home.webapp.model.dao.DAOException;
-import ru.home.webapp.model.dao.IUserDAO;
-import ru.home.webapp.model.dao.UserDAO;
-import ru.home.webapp.model.entities.User;
+import ru.home.webapp.dao.DAOException;
+import ru.home.webapp.dao.IUserDAO;
+import ru.home.webapp.dao.UserDAO;
+import ru.home.webapp.domain.User;
 import ru.home.webapp.utils.ConnectionDBException;
 
 import javax.servlet.ServletException;
@@ -21,9 +21,9 @@ import java.io.PrintWriter;
  * @author Evgeniy Presnov
  */
 @WebServlet("/login")
-public class LoginServlet extends HttpServlet {
+public class Login extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(LoginServlet.class.getName());
+    private static Logger logger = Logger.getLogger(Login.class.getName());
 
     /*
      Display the page of logging in
@@ -49,9 +49,9 @@ public class LoginServlet extends HttpServlet {
 
          If all fields are not empty
          */
-        if (submitType.equals("login") && !userName.equals("") && !password.equals("")) {
+        if (submitType.equals("Login") && !userName.equals("") && !password.equals("")) {
             IUserDAO userDAO = new UserDAO();
-            User user = null;
+            User user = new User();
             try {
                 user = userDAO.getUser(userName, password);
             } catch (DAOException | ConnectionDBException e) {
@@ -61,7 +61,7 @@ public class LoginServlet extends HttpServlet {
              /*
              The search for a user in the database
              */
-            if ((user.getName() != null && user.getPassword() != null) &&
+            if (user.getName() != null && user.getPassword() != null &&
                     user.getName().equals(userName) && user.getPassword().equals(password)) {
                 logger.info("User '" + loginedUser + "' in logged in");
                 resp.sendRedirect(req.getContextPath() + "/home");

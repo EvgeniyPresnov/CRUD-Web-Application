@@ -15,7 +15,7 @@
                 <td><input type="password" name="password"></td>
             </tr>
             <tr>
-                <td><input type="submit" name="submit" value="login"></td>
+                <td><input type="submit" name="submit" value="Login"></td>
                 <td><a href="registration"> Registration</a></td>
             </tr>
         </table>

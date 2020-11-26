@@ -8,7 +8,7 @@
 
     <h3>Create an order</h3>
 
-    <form action="createOrder" method="post" >
+    <form action="addBook" method="post" >
         <table border="0">
             <tr>
                 <td>ID: </td><td>

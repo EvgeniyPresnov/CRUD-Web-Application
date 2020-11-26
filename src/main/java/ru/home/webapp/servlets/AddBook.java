@@ -1,10 +1,10 @@
 package ru.home.webapp.servlets;
 
 import org.apache.log4j.Logger;
-import ru.home.webapp.model.dao.BookDAO;
-import ru.home.webapp.model.dao.DAOException;
-import ru.home.webapp.model.dao.IBookDAO;
-import ru.home.webapp.model.entities.Book;
+import ru.home.webapp.dao.BookDAO;
+import ru.home.webapp.dao.DAOException;
+import ru.home.webapp.dao.IBookDAO;
+import ru.home.webapp.domain.Book;
 import ru.home.webapp.utils.ConnectionDBException;
 
 import javax.servlet.ServletException;
@@ -21,17 +21,17 @@ import java.io.PrintWriter;
  *
  * @author Evgeniy Presnov
  */
-@WebServlet("/createOrder")
-public class CreateOrderServlet extends HttpServlet {
+@WebServlet("/addBook")
+public class AddBook extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(CreateOrderServlet.class.getName());
+    private static Logger logger = Logger.getLogger(AddBook.class.getName());
 
     /*
      Display the page for adding a book
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/view/createOrder.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/view/addBook.jsp").forward(req, resp);
     }
 
     /**

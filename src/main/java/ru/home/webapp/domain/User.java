@@ -1,6 +1,7 @@
-package ru.home.webapp.model.entities;
+package ru.home.webapp.domain;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * This is class is simple POJO containing get/set methods to store data retrieved using DAO class
@@ -39,16 +40,13 @@ public class User implements Serializable {
             return false;
         }
 
-        User user = (User) obj;
+        User other = (User) obj;
 
-        return user.name.equals(name) && user.password.equals(password);
+        return Objects.equals(name, other.name) && Objects.equals(password, other.password);
     }
 
     @Override
     public int hashCode() {
-        int result = 17;
-        result = 31 * result + name.hashCode();
-        result = 31 * result + password.hashCode();
-        return result;
+        return Objects.hash(name, password);
     }
 }

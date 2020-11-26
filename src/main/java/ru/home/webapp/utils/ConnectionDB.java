@@ -3,6 +3,7 @@ package ru.home.webapp.utils;
 
 import org.apache.log4j.Logger;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -17,10 +18,10 @@ public final class ConnectionDB {
     private static Logger logger = Logger.getLogger(ConnectionDB.class.getName());
     private static ConnectionDB instance = null;
     private Connection connection = null;
-    private static String user = null;
-    private static String password = null;
-    private static String url = null;
-    private static String driver = null;
+    private String user = null;
+    private String password = null;
+    private String url = null;
+    private String driver = null;
 
     private ConnectionDB() throws ConnectionDBException {
         try {
@@ -63,8 +64,9 @@ public final class ConnectionDB {
 
     private void loadProperties() throws ConnectionDBException {
         Properties properties = new Properties();
-        try {
-            properties.load(ConnectionDB.class.getResourceAsStream("/db.properties"));
+        try (InputStream inputStream = getClass()
+                .getClassLoader().getResourceAsStream("/db.properties")) {
+            properties.load(inputStream);
             user = properties.getProperty("user");
             password = properties.getProperty("password");
             url = properties.getProperty("url");

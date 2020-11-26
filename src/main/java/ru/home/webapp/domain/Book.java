@@ -1,6 +1,7 @@
-package ru.home.webapp.model.entities;
+package ru.home.webapp.domain;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * This is class is simple POJO containing get/set methods to store data retrieved using DAO class
@@ -47,20 +48,17 @@ public class Book implements Serializable {
         if (!(obj instanceof Book)) {
             return false;
         }
-        Book book = (Book) obj;
 
-        return book.bookID.equals(bookID)
-                && book.title.equals(title)
-                && book.author.equals(author);
+        Book other = (Book) obj;
+
+        return Objects.equals(bookID, other.bookID)
+                && Objects.equals(title, other.title)
+                && Objects.equals(author, other.author);
     }
 
     @Override
     public int hashCode() {
-        int result = 17;
-        result = 31 * result + bookID.hashCode();
-        result = 31 * result + title.hashCode();
-        result = 31 * result + author.hashCode();
-        return result;
+        return Objects.hash(bookID, title, author);
     }
 
 }

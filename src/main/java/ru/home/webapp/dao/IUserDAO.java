@@ -1,6 +1,6 @@
-package ru.home.webapp.model.dao;
+package ru.home.webapp.dao;
 
-import ru.home.webapp.model.entities.User;
+import ru.home.webapp.domain.User;
 import ru.home.webapp.utils.ConnectionDBException;
 
 /**

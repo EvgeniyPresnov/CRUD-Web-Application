@@ -1,10 +1,10 @@
 package ru.home.webapp.servlets;
 
 import org.apache.log4j.Logger;
-import ru.home.webapp.model.dao.BookDAO;
-import ru.home.webapp.model.dao.DAOException;
-import ru.home.webapp.model.dao.IBookDAO;
-import ru.home.webapp.model.entities.Book;
+import ru.home.webapp.dao.BookDAO;
+import ru.home.webapp.dao.DAOException;
+import ru.home.webapp.dao.IBookDAO;
+import ru.home.webapp.domain.Book;
 import ru.home.webapp.utils.ConnectionDBException;
 
 import javax.servlet.ServletException;
@@ -20,9 +20,9 @@ import java.io.IOException;
  * @author Evgeniy Presnov
  */
 @WebServlet("/updateBook")
-public class UpdateBookServlet extends HttpServlet {
+public class UpdateBook extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(UpdateBookServlet.class.getName());
+    private static Logger logger = Logger.getLogger(UpdateBook.class.getName());
 
     /*
      Display the edit page of the book
@@ -32,14 +32,13 @@ public class UpdateBookServlet extends HttpServlet {
         String bookID = req.getParameter("bookID");
 
         IBookDAO bookDAO = new BookDAO();
-        Book book = null;
+        Book book = new Book();
         try {
             book = bookDAO.findBookById(bookID);
+            req.setAttribute("book", book);
         } catch (DAOException | ConnectionDBException e) {
             e.printStackTrace();
         }
-
-        req.setAttribute("book", book);
 
         logger.info("The book with bookID = " + bookID  +
                 " , the title '" + book.getTitle() + "' and the author: " + book.getAuthor());

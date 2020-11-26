@@ -1,9 +1,8 @@
-package ru.home.webapp.model.dao;
+package ru.home.webapp.dao;
 
-import ru.home.webapp.model.entities.User;
+import ru.home.webapp.domain.User;
 
 import java.io.IOException;
-import java.net.PasswordAuthentication;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

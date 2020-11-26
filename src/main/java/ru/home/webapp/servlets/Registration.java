@@ -2,10 +2,10 @@ package ru.home.webapp.servlets;
 
 
 import org.apache.log4j.Logger;
-import ru.home.webapp.model.dao.DAOException;
-import ru.home.webapp.model.dao.IUserDAO;
-import ru.home.webapp.model.dao.UserDAO;
-import ru.home.webapp.model.entities.User;
+import ru.home.webapp.dao.DAOException;
+import ru.home.webapp.dao.IUserDAO;
+import ru.home.webapp.dao.UserDAO;
+import ru.home.webapp.domain.User;
 import ru.home.webapp.utils.ConnectionDBException;
 
 import javax.servlet.ServletException;
@@ -20,9 +20,9 @@ import java.io.PrintWriter;
  * @author Evgeniy Presnov
  */
 @WebServlet("/registration")
-public class RegisterServlet extends HttpServlet {
+public class Registration extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(RegisterServlet.class.getName());
+    private static Logger logger = Logger.getLogger(Registration.class.getName());
 
     /*
      Display the page of registration
@@ -51,7 +51,7 @@ public class RegisterServlet extends HttpServlet {
 
          If all fields are not empty
          */
-        if (submitType.equals("register") && !userName.equals("") && !password.equals("") && !repeatPassword.equals("")) {
+        if (submitType.equals("Registration") && !userName.equals("") && !password.equals("") && !repeatPassword.equals("")) {
             /*
              Checking whether the password matches and the repeated password.
              */

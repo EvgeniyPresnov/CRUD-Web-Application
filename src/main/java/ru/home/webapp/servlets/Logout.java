@@ -1,9 +1,9 @@
 package ru.home.webapp.servlets;
 
 import org.apache.log4j.Logger;
-import ru.home.webapp.model.dao.DAOException;
-import ru.home.webapp.model.dao.IUserDAO;
-import ru.home.webapp.model.dao.UserDAO;
+import ru.home.webapp.dao.DAOException;
+import ru.home.webapp.dao.IUserDAO;
+import ru.home.webapp.dao.UserDAO;
 import ru.home.webapp.utils.ConnectionDBException;
 
 import javax.servlet.ServletException;
@@ -17,9 +17,9 @@ import java.io.IOException;
  * @author Evgeniy Presnov
  */
 @WebServlet("/logout")
-public class LogoutServlet extends HttpServlet {
+public class Logout extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(LogoutServlet.class.getName());
+    private static Logger logger = Logger.getLogger(Logout.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

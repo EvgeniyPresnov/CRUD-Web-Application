@@ -1,9 +1,9 @@
 package ru.home.webapp.servlets;
 
 import org.apache.log4j.Logger;
-import ru.home.webapp.model.dao.BookDAO;
-import ru.home.webapp.model.dao.DAOException;
-import ru.home.webapp.model.dao.IBookDAO;
+import ru.home.webapp.dao.BookDAO;
+import ru.home.webapp.dao.DAOException;
+import ru.home.webapp.dao.IBookDAO;
 import ru.home.webapp.utils.ConnectionDBException;
 
 import javax.servlet.annotation.WebServlet;
@@ -18,9 +18,9 @@ import java.io.IOException;
  * @author Evgeniy Presnov
  */
 @WebServlet("/deleteBook")
-public class DeleteBookServlet extends HttpServlet {
+public class DeleteBook extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(DeleteBookServlet.class.getName());
+    private static Logger logger = Logger.getLogger(DeleteBook.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

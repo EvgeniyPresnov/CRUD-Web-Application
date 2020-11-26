@@ -1,4 +1,4 @@
-package ru.home.webapp.model.dao;
+package ru.home.webapp.dao;
 
 /**
  * This class implements the exception logic on Data layer

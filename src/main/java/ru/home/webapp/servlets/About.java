@@ -8,17 +8,18 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * This class implements the logic of going to a welcome page when a hyperlink 'exit' is clicked
+ * This class implements the logic of going to an information page about web application
+ * when a hyperlink 'about' is clicked
  *
  * @author Evgeniy Presnov
  */
-@WebServlet("/exit")
-public class ExitServlet extends HttpServlet {
+@WebServlet("/about")
+public class About extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.sendRedirect("/welcome.html");
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("/WEB-INF/view/about.jsp").forward(req, resp);
     }
 
     @Override

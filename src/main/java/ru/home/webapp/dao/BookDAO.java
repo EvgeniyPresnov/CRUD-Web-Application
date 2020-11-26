@@ -1,7 +1,7 @@
-package ru.home.webapp.model.dao;
+package ru.home.webapp.dao;
 
 import org.apache.log4j.Logger;
-import ru.home.webapp.model.entities.Book;
+import ru.home.webapp.domain.Book;
 import ru.home.webapp.utils.ConnectionDB;
 import ru.home.webapp.utils.ConnectionDBException;
 
