@@ -49,7 +49,7 @@ public class UserDAOTest {
     }
 
     @Test
-    public void checkPasswordAdminUserTest() throws ConnectionDBException, DAOException {
+    public void checkPasswordAdminUserTest() throws ConnectionDBException, DAOException, SQLException {
         IUserDAO userDAO = new UserDAO();
 
         String userName = "admin";
@@ -62,7 +62,7 @@ public class UserDAOTest {
     }
 
     @Test
-    public void checkNameDefaultUserTest() throws ConnectionDBException, DAOException {
+    public void checkNameDefaultUserTest() throws ConnectionDBException, DAOException, SQLException {
         IUserDAO userDAO = new UserDAO();
         User user = new User();
 

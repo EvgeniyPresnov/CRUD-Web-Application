@@ -5,6 +5,7 @@ import ru.home.webapp.domain.Book;
 import org.junit.Test;
 import ru.home.webapp.utils.ConnectionDBException;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -12,7 +13,7 @@ import static org.junit.Assert.*;
 public class BookDAOTest {
 
     @Test
-    public void checkTitleByBookIDTest() throws ConnectionDBException, DAOException {
+    public void checkTitleByBookIDTest() throws ConnectionDBException, DAOException, SQLException {
         String expected = "Nineteen Eighty-Four";
         String bookID = "5";
 
@@ -24,7 +25,7 @@ public class BookDAOTest {
     }
 
     @Test
-    public void checkAuthorByBookIDTest() throws ConnectionDBException, DAOException {
+    public void checkAuthorByBookIDTest() throws ConnectionDBException, DAOException, SQLException {
         String expected = "Jane Austen";
         String bookID = "2";
 
@@ -50,7 +51,7 @@ public class BookDAOTest {
     }
 
     @Test
-    public void checkListTest() throws ConnectionDBException, DAOException {
+    public void checkListTest() throws ConnectionDBException, DAOException, SQLException {
         IBookDAO bookDAO = new BookDAO();
         List<Book> listBooks = bookDAO.getListBooks();
 

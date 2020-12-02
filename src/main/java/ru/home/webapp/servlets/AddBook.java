@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 /**
  * This class implements the logic of going to a page when a hyperlink 'createOrder' is clicked.
@@ -24,7 +25,7 @@ import java.io.PrintWriter;
 @WebServlet("/addBook")
 public class AddBook extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(AddBook.class.getName());
+    private static final Logger logger = Logger.getLogger(AddBook.class.getName());
 
     /*
      Display the page for adding a book
@@ -67,7 +68,7 @@ public class AddBook extends HttpServlet {
             IBookDAO bookDAO = new BookDAO();
             try {
                 bookDAO.addBook(book);
-            } catch (DAOException | ConnectionDBException e) {
+            } catch (DAOException | ConnectionDBException | SQLException e) {
                 e.printStackTrace();
                 logger.error(e);
             }

@@ -16,7 +16,7 @@ import javax.servlet.annotation.WebListener;
  */
 @WebListener
 public final class ConnectionDBListener implements ServletContextListener {
-    private static Logger logger = Logger.getLogger(ConnectionDBListener.class.getName());
+    private static final Logger logger = Logger.getLogger(ConnectionDBListener.class.getName());
 
     /**
      * @see ServletContextListener#contextInitialized(ServletContextEvent)

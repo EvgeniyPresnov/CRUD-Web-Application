@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * This class implements the logic for editing the selected book from the list
@@ -22,7 +23,7 @@ import java.io.IOException;
 @WebServlet("/updateBook")
 public class UpdateBook extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(UpdateBook.class.getName());
+    private static final Logger logger = Logger.getLogger(UpdateBook.class.getName());
 
     /*
      Display the edit page of the book
@@ -36,7 +37,7 @@ public class UpdateBook extends HttpServlet {
         try {
             book = bookDAO.findBookById(bookID);
             req.setAttribute("book", book);
-        } catch (DAOException | ConnectionDBException e) {
+        } catch (DAOException | ConnectionDBException | SQLException e) {
             e.printStackTrace();
         }
 
@@ -64,7 +65,7 @@ public class UpdateBook extends HttpServlet {
         IBookDAO bookDAO = new BookDAO();
         try {
             bookDAO.updateBook(book);
-        } catch (DAOException | ConnectionDBException e) {
+        } catch (DAOException | ConnectionDBException | SQLException e) {
             e.printStackTrace();
         }
         req.setAttribute("book", book);

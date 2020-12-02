@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 /**
  * Class implements the logic of logging in to the application
@@ -23,7 +24,7 @@ import java.io.PrintWriter;
 @WebServlet("/login")
 public class Login extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(Login.class.getName());
+    private static final Logger logger = Logger.getLogger(Login.class.getName());
 
     /*
      Display the page of logging in
@@ -54,7 +55,7 @@ public class Login extends HttpServlet {
             User user = new User();
             try {
                 user = userDAO.getUser(userName, password);
-            } catch (DAOException | ConnectionDBException e) {
+            } catch (DAOException | ConnectionDBException | SQLException e) {
                 e.printStackTrace();
                 logger.error(e);
             }

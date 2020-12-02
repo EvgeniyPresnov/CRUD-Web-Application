@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * This class implements the logic for deleting a user from the database
@@ -19,7 +20,7 @@ import java.io.IOException;
 @WebServlet("/logout")
 public class Logout extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(Logout.class.getName());
+    private static final Logger logger = Logger.getLogger(Logout.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,7 +30,7 @@ public class Logout extends HttpServlet {
 
         try {
             userDAO.deleteUser(user);
-        } catch (DAOException | ConnectionDBException e) {
+        } catch (DAOException | ConnectionDBException | SQLException e) {
             e.printStackTrace();
             logger.error(e);
         }

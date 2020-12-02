@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ import java.util.List;
 @WebServlet("/bookList")
 public class BookList extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(BookList.class.getName());
+    private static final Logger logger = Logger.getLogger(BookList.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -32,9 +33,9 @@ public class BookList extends HttpServlet {
         IBookDAO bookDAO = new BookDAO();
         try {
             listBooks = bookDAO.getListBooks();
-        } catch (DAOException | ConnectionDBException e) {
+        } catch (DAOException | ConnectionDBException | SQLException e) {
             e.printStackTrace();
-            logger.error(BookList.class.getMethods(),e);
+            logger.error(e);
         }
 
         req.setAttribute("listBooks", listBooks);

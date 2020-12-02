@@ -18,7 +18,7 @@ public class Exit extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.sendRedirect("/welcome.html");
+        resp.sendRedirect(req.getContextPath() + "/welcome.html");
     }
 
     @Override

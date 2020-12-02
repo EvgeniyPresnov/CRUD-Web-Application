@@ -13,6 +13,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 /**
  * This class implements the logic of user registration in the database
@@ -22,7 +23,7 @@ import java.io.PrintWriter;
 @WebServlet("/registration")
 public class Registration extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static Logger logger = Logger.getLogger(Registration.class.getName());
+    private static final Logger logger = Logger.getLogger(Registration.class.getName());
 
     /*
      Display the page of registration
@@ -60,7 +61,7 @@ public class Registration extends HttpServlet {
                 user.setPassword(password);
                 try {
                     userDAO.addUser(user);
-                } catch (DAOException | ConnectionDBException e) {
+                } catch (DAOException | ConnectionDBException | SQLException e) {
                     e.printStackTrace();
                 }
 
