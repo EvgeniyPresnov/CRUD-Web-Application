@@ -15,15 +15,16 @@ import java.sql.SQLException;
  * @author Evgeniy Presnov
  */
 public final class UserDAO implements IUserDAO {
-    private static Logger logger = Logger.getLogger(UserDAO.class.getName());
+    private static final Logger logger = Logger.getLogger(UserDAO.class.getName());
 
     /**
      *
      * @param user the user who will be added to the database
      */
     @Override
-    public void addUser(User user) throws DAOException, ConnectionDBException {
+    public void addUser(User user) throws DAOException, ConnectionDBException, SQLException {
         final String ADD_USER = "INSERT INTO user VALUES(?, ?)";
+        ConnectionDB.getInstance().getConnection().setAutoCommit(false);
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
                 .getConnection()
@@ -32,8 +33,11 @@ public final class UserDAO implements IUserDAO {
             statement.setString(1, user.getName());
             statement.setString(2, user.getPassword());
             statement.executeUpdate();
+
+            ConnectionDB.getInstance().getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            ConnectionDB.getInstance().getConnection().rollback();
             logger.error("Could not add a new user: ", e);
             throw new DAOException("Could not add a new user: ", e);
         } catch (ConnectionDBException e) {
@@ -49,10 +53,11 @@ public final class UserDAO implements IUserDAO {
      * @return the user by name and password
      */
     @Override
-    public User getUser(String userName, String password) throws DAOException, ConnectionDBException {
+    public User getUser(String userName, String password) throws DAOException, ConnectionDBException, SQLException {
         final String GET_USER = "SELECT * FROM user WHERE name = ? AND password = ?";
+        ConnectionDB.getInstance().getConnection().setAutoCommit(false);
         User user = new User();
-        ResultSet resultSet = null;
+        ResultSet resultSet;
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
                 .getConnection()
@@ -68,8 +73,10 @@ public final class UserDAO implements IUserDAO {
                 user.setPassword(resultSet.getString("password"));
             }
             resultSet.close();
+            ConnectionDB.getInstance().getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            ConnectionDB.getInstance().getConnection().rollback();
             logger.error("Could not get the user: ", e);
             throw new DAOException("Could not get the user: ", e);
         } catch (ConnectionDBException e) {
@@ -85,8 +92,9 @@ public final class UserDAO implements IUserDAO {
      * @param userName name of the user who will be deleted from database
      */
     @Override
-    public void deleteUser(String userName) throws DAOException, ConnectionDBException {
+    public void deleteUser(String userName) throws DAOException, ConnectionDBException, SQLException {
         final String DELETE_USER = "DELETE FROM user WHERE name = ?";
+        ConnectionDB.getInstance().getConnection().setAutoCommit(false);
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
                 .getConnection()
@@ -94,8 +102,11 @@ public final class UserDAO implements IUserDAO {
 
             statement.setString(1, userName);
             statement.executeUpdate();
+
+            ConnectionDB.getInstance().getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            ConnectionDB.getInstance().getConnection().rollback();
             logger.error("Could not delete the user: ", e);
             throw new DAOException("Could not delete the user: ", e);
         } catch (ConnectionDBException e) {

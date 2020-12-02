@@ -15,15 +15,16 @@ import java.util.List;
  * @author Evgeniy Presnov
  */
 public final class BookDAO implements IBookDAO {
-    private static Logger logger = Logger.getLogger(BookDAO.class.getName());
+    private static final Logger logger = Logger.getLogger(BookDAO.class.getName());
 
     /**
      *
      * @param book that the user wants to add to the list
      */
     @Override
-    public void addBook(Book book) throws DAOException, ConnectionDBException {
+    public void addBook(Book book) throws DAOException, ConnectionDBException, SQLException {
         final String ADD_BOOK = "INSERT INTO book VALUES(?, ?, ?)";
+        ConnectionDB.getInstance().getConnection().setAutoCommit(false);
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
                 .getConnection()
@@ -33,8 +34,11 @@ public final class BookDAO implements IBookDAO {
             statement.setString(2, book.getTitle());
             statement.setString(3, book.getAuthor());
             statement.executeUpdate();
+
+            ConnectionDB.getInstance().getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            ConnectionDB.getInstance().getConnection().rollback();
             logger.error("Could not add a book into the list: ", e);
             throw new DAOException("Could not add a book into the list: ", e);
         } catch (ConnectionDBException e) {
@@ -49,8 +53,9 @@ public final class BookDAO implements IBookDAO {
      * @param book that the user wants to edit from the list
      */
     @Override
-    public void updateBook(Book book) throws DAOException, ConnectionDBException {
+    public void updateBook(Book book) throws DAOException, ConnectionDBException, SQLException {
         final String UPDATE_BOOK = "UPDATE book SET title = ?, author = ? WHERE book_id = ?";
+        ConnectionDB.getInstance().getConnection().setAutoCommit(false);
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
                 .getConnection()
@@ -60,8 +65,11 @@ public final class BookDAO implements IBookDAO {
             statement.setString(2, book.getAuthor());
             statement.setString(3, book.getBookID());
             statement.executeUpdate();
+
+            ConnectionDB.getInstance().getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            ConnectionDB.getInstance().getConnection().rollback();
             logger.error("Could not edit the book from the list: ", e);
             throw new DAOException("Could not edit the book from the list: ", e);
         } catch (ConnectionDBException e) {
@@ -76,8 +84,9 @@ public final class BookDAO implements IBookDAO {
      * @param bookID is the ID of the book that the user wants to delete
      */
     @Override
-    public void deleteBook(String bookID) throws DAOException, ConnectionDBException {
+    public void deleteBook(String bookID) throws DAOException, ConnectionDBException, SQLException {
         final String DELETE_BOOK = "DELETE FROM book WHERE book_id = ?";
+        ConnectionDB.getInstance().getConnection().setAutoCommit(false);
 
         try (PreparedStatement statement = ConnectionDB.getInstance()
                 .getConnection()
@@ -85,8 +94,11 @@ public final class BookDAO implements IBookDAO {
 
             statement.setString(1, bookID);
             statement.executeUpdate();
+
+            ConnectionDB.getInstance().getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            ConnectionDB.getInstance().getConnection().rollback();
             logger.error("Could not delete the book from the list: ", e);
             throw new DAOException("Could not delete the book from the list: ", e);
         } catch (ConnectionDBException e) {
@@ -101,8 +113,9 @@ public final class BookDAO implements IBookDAO {
      * @return list of books
      */
     @Override
-    public List<Book> getListBooks() throws DAOException, ConnectionDBException {
+    public List<Book> getListBooks() throws DAOException, ConnectionDBException, SQLException {
         final String GET_LIST_BOOKS = "SELECT book_id, title, author FROM book";
+        ConnectionDB.getInstance().getConnection().setAutoCommit(false);
         List<Book> listBooks = new ArrayList<>();
         ResultSet resultSet;
 
@@ -118,9 +131,12 @@ public final class BookDAO implements IBookDAO {
                 book.setAuthor(resultSet.getString("author"));
                 listBooks.add(book);
             }
+
             resultSet.close();
+            ConnectionDB.getInstance().getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            ConnectionDB.getInstance().getConnection().rollback();
             logger.error("Could not get the list of books: ", e);
             throw new DAOException("Could not get the list of books: ", e);
         } catch (ConnectionDBException e) {
@@ -137,8 +153,9 @@ public final class BookDAO implements IBookDAO {
      * @return book
      */
     @Override
-    public Book findBookById(String bookID) throws DAOException, ConnectionDBException {
+    public Book findBookById(String bookID) throws DAOException, ConnectionDBException, SQLException {
         final String FIND_BOOK_BY_ID = "SELECT * FROM book WHERE book_id = ?";
+        ConnectionDB.getInstance().getConnection().setAutoCommit(false);
         Book book =  new Book();
         ResultSet resultSet;
 
@@ -155,8 +172,10 @@ public final class BookDAO implements IBookDAO {
                 book.setAuthor(resultSet.getString("author"));
             }
             resultSet.close();
+            ConnectionDB.getInstance().getConnection().commit();
         } catch (SQLException e) {
             e.printStackTrace();
+            ConnectionDB.getInstance().getConnection().rollback();
             logger.error("Could not find the book by id: ", e);
             throw new DAOException("Could not find the book by id: ", e);
         } catch (ConnectionDBException e) {
