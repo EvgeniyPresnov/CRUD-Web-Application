@@ -65,7 +65,7 @@ mvn tomcat7:run
 ```
 Open the browser
 ```
-http://localhost:8088/
+http://localhost:8088/crud-web-app/
 ```
 ## Running the tests
 ```
