@@ -101,7 +101,7 @@
         <version>2.2</version>
         <configuration>
           <port>8088</port>
-          <path>/</path>
+          <path>/crud-web-app/</path>
         </configuration>
       </plugin>
 
