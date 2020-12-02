@@ -20,11 +20,11 @@ Clone the repository
 git clone git@github.com:ZhekaPresnov/Simple-CRUD-Web-Application.git
 cd Simple-CRUD-Web-Application
 ```
-Edit in IntelliJ IDEA the file **db.properties** in */src/main/resources/db.properties*
+Edit the file **db.properties** in */src/main/resources/db.properties*
 by changing the username and password to the newly created now, i.e.
 user = 'YOUR_PASSWORD' and password ='YOUR_PASSWORD'
 
-Run in IntelliJ IDEA the script **db.sql** in */src/main/resources/db.sql*
+Run the script **db.sql** in */src/main/resources/db.sql*
 and you will see like this
 ```
 [2020-11-26 08:53:37] Connecting to crud_web_app@localhost... (crud_web_app)
